@@ -9,16 +9,15 @@ as if your serial cable actually had a dtr pin.
 Instructions:
 -------------
 
-Copy both files into your /usr/bin directory, then rename the original avrdude to avrdude-original
-and symlink avrdude-autoreset to become avrdude.
+Clone the repo to the users homedir, rename the original avrdude to avrdude-original, symlink the autoreset file from your /usr/bin directory and symlink avrdude-autoreset to become avrdude.
 
-    cp autoreset /usr/bin
-    cp avrdude-autoreset /usr/bin
-    mv /usr/bin/avrdude /usr/bin/avrdude-original
-    ln -s /usr/bin/avrdude-autoreset /usr/bin/avrdude
+    git clone https://github.com/pb66/avrdude-rpi.git ~/avrdude-rpi
+    sudo mv /usr/bin/avrdude /usr/bin/avrdude-original
+    sudo ln -s ~/avrdude-rpi/autoreset /usr/bin
+    sudo ln -s ~/avrdude-rpi/avrdude-autoreset /usr/bin/avrdude
 
 Modify the autoreset script to use the pin that you wired up to the reset pin.  See the line in
-autoreset where we do "pin = 4" and change the 4 to your gpio pin number.
+autoreset where we do "pin = 4" and change the 4 to your gpio pin number. (RFM2Pi boards use gpio 4)
 
 Now when you run avrdude from anywhere (including via arduino's normal UI) it will flag dtr when
 it is about to upload hex data.
@@ -38,3 +37,5 @@ This symlink will need to be recreated at each boot so a line should added to th
 and at the end of that file just before the "exit 0" line add the line
 
     sudo ln -s /dev/ttyAMA0 /dev/ttyS0
+    
+the user needs to be added to the "tty" group 
