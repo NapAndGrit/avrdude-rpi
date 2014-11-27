@@ -26,6 +26,15 @@ it is about to upload hex data.
 http://www.deanmao.com/2012/08/12/fixing-the-dtr-pin/
 
 Make sure Python is installed
-$sudo apt-get update
-$sudo apt-get install python-dev
-$sudo apt-get install python-rpi.gpio
+
+    sudo apt-get update
+    sudo apt-get install python-dev python-rpi.gpio
+
+If using with Arduino IDE on Raspberry Pi a symlink is also required to /dev/ttyAMA0 from the IDE's default target serial port of /dev/ttyS0 (on Linux). 
+This symlink will need to be recreated at each boot so a line should added to the rc.local file
+
+    sudo nano /etc/rc.local
+    
+and at the end of that file just before the "exit 0" line add the line
+
+    sudo ln -s /dev/ttyAMA0 /dev/ttyS0

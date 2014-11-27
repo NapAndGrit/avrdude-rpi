@@ -11,9 +11,9 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 dtr = re.compile('.+TIOCM_DTR.+')
 start = time.time()
+pin = 4
 
 def reset():
-  pin = 4
   GPIO.setmode(GPIO.BCM)
   GPIO.setup(pin, GPIO.OUT)
   GPIO.output(pin, GPIO.HIGH)
@@ -34,4 +34,5 @@ def process():
       continue
 
 process()
-print "done with autoreset"
+print "avrdude-original: Using autoreset DTR on GPIO " +str(pin)
+

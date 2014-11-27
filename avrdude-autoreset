@@ -1,3 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
-sudo strace -o "|autoreset" -eioctl /usr/bin/avrdude-original $@
+if [[ $@ == */dev/ttyS0* ]]
+then
+	sudo strace -o "|autoreset" -eioctl /usr/bin/avrdude-original $@;
+else
+	sudo /usr/bin/avrdude-original $@;
+fi
