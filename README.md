@@ -104,3 +104,15 @@ Save the file and then "make" the additional files using
     cd -
 
 http://forum.arduino.cc/index.php?topic=124879.0
+
+###More info
+
+[OEM forum discussion](http://openenergymonitor.org/emon/node/6121)
+
+[RFM2Pi v2 Wiki](http://wiki.openenergymonitor.org/index.php?title=RFM12Pi_V2)
+
+[RFM2Pi software repo](https://github.com/openenergymonitor/RFM2Pi)
+
+[RFM2Pi hardware repo](https://github.com/openenergymonitor/Hardware/tree/master/RFM2Pi)
+
+
