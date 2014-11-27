@@ -97,7 +97,7 @@ and insert these lines below the standard "atmega328" section
     atmega328_384_8_isp: EFUSE = 05
     atmega328_384_8_isp: isp
 
-Save the file and then create the additional files
+Save the file and then "make" the additional files using
 
     cd /usr/share/arduino/hardware/arduino/bootloaders/optiboot
     sudo make atmega328_384_8
