@@ -29,6 +29,8 @@ Make sure Python is installed
 
     sudo apt-get update
     sudo apt-get install python-dev python-rpi.gpio
+    
+####Arduino IDE
 
 If using with Arduino IDE on Raspberry Pi a symlink is also required to /dev/ttyAMA0 from the IDE's default target serial port of /dev/ttyS0 (on Linux). 
 This symlink will need to be recreated at each boot so a line should added to the rc.local file
@@ -38,5 +40,3 @@ This symlink will need to be recreated at each boot so a line should added to th
 and at the end of that file just before the "exit 0" line add the line
 
     sudo ln -s /dev/ttyAMA0 /dev/ttyS0
-    
-the user needs to be added to the "tty" group 
