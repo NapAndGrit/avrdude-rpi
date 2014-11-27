@@ -9,12 +9,13 @@ as if your serial cable actually had a dtr pin.
 Instructions:
 -------------
 
-Clone the repo to the users homedir, rename the original avrdude to avrdude-original, symlink the autoreset file from your /usr/bin directory and symlink avrdude-autoreset to become avrdude.
+Clone the repo to the users homedir, rename the original avrdude to avrdude-original, symlink the autoreset files from your /usr/bin directory and symlink avrdude-autoreset to become avrdude.
 
     git clone https://github.com/pb66/avrdude-rpi.git ~/avrdude-rpi
     sudo mv /usr/bin/avrdude /usr/bin/avrdude-original
-    sudo ln -s ~/avrdude-rpi/autoreset /usr/bin
-    sudo ln -s ~/avrdude-rpi/avrdude-autoreset /usr/bin/avrdude
+    sudo ln ~/avrdude-rpi/autoreset /usr/bin
+    sudo ln ~/avrdude-rpi/avrdude-autoreset /usr/bin
+    sudo ln -s /usr/bin/avrdude-autoreset /usr/bin/avrdude
 
 Modify the autoreset script to use the pin that you wired up to the reset pin.  See the line in
 autoreset where we do "pin = 4" and change the 4 to your gpio pin number. (RFM2Pi boards use gpio 4)
