@@ -4,12 +4,28 @@
 # See https://github.com/pb66/avrdude-rpi.git for more info
 # git clone https://github.com/pb66/avrdude-rpi.git ~/avrdude-rpi && ~/avrdude-rpi/install
 
-sudo apt-get update
-sudo apt-get upgrade -y
-# install arduino IDE ???
-sudo apt-get install -y python-dev arduino
-# or just avr-dude
-#sudo apt-get install -y python-dev arduino-core
+for ARG in $@
+do
+    case $ARG in
+        -u | --updated)
+            UPDATE=False;;
+        -i | --ide)
+            IDE=True;;
+        *)
+            echo "Incorrect argument "$ARG
+            echo "Aborting installion...."
+            exit;;
+    esac
+done
+
+if [[ $UPDATE != False ]] ; then
+    sudo apt-get update
+    sudo apt-get upgrade -y
+fi
+# install arduino IDE or just avrdude ???
+ARDUINO="arduino-core"
+if [[ $IDE == "True" ]]; then ARDUINO="arduino"; fi
+sudo apt-get install -y $ARDUINO python-dev
 
 sudo mv /usr/bin/avrdude /usr/bin/avrdude-original
 sudo ln ~/avrdude-rpi/autoreset /usr/bin
