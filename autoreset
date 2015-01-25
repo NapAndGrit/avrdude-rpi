@@ -36,3 +36,4 @@ def process():
 process()
 print "avrdude-original: Using autoreset DTR on GPIO " +str(pin)
 
+exit

@@ -1,0 +1,134 @@
+#!/bin/bash
+
+# Install modified version of avrdude-rpi
+# See https://github.com/pb66/avrdude-rpi.git for more info
+# git clone https://github.com/pb66/avrdude-rpi.git ~/avrdude-rpi && ~/avrdude-rpi/install
+
+sudo apt-get update
+sudo apt-get upgrade -y
+# install arduino IDE ???
+sudo apt-get install -y python-dev arduino
+# or just avr-dude
+#sudo apt-get install -y python-dev arduino-core
+
+sudo mv /usr/bin/avrdude /usr/bin/avrdude-original
+sudo ln ~/avrdude-rpi/autoreset /usr/bin
+sudo ln ~/avrdude-rpi/avrdude-autoreset /usr/bin
+sudo ln -s /usr/bin/avrdude-autoreset /usr/bin/avrdude
+
+# Symlink the Arduino default serial port target to actual serial port
+sudo ln -s /dev/ttyAMA0 /dev/ttyS0
+# Add a line to rc.local to recreate the symlink at each start-up.
+sudo sh -c 'sed -i "/^exit 0/i\sudo ln -s /dev/ttyAMA0 /dev/ttyS0\n" /etc/rc.local'
+
+
+sudo mv /usr/share/arduino/hardware/arduino/boards.txt /usr/share/arduino/hardware/arduino/boards.txt.orig
+sudo sh -c 'cat <<EOF > /usr/share/arduino/hardware/arduino/boards.txt
+
+# Custom boards added by avrtoolbox include
+# RFM2Pi v2,
+
+#############################################################
+
+atmega328_384_8.name=RFM2Pi v2 (ATmega328@8MHz)
+
+atmega328_384_8.upload.protocol=arduino
+atmega328_384_8.upload.maximum_size=30720
+atmega328_384_8.upload.speed=38400
+
+atmega328_384_8.bootloader.low_fuses=0xE2
+atmega328_384_8.bootloader.high_fuses=0xDE
+atmega328_384_8.bootloader.extended_fuses=0x05
+atmega328_384_8.bootloader.path=optiboot
+atmega328_384_8.bootloader.file=optiboot_atmega328_384_8.hex
+atmega328_384_8.bootloader.unlock_bits=0x3F
+atmega328_384_8.bootloader.lock_bits=0x0F
+
+atmega328_384_8.build.mcu=atmega328p
+atmega328_384_8.build.f_cpu=8000000L
+atmega328_384_8.build.core=arduino
+atmega328_384_8.build.variant=standard
+
+##############################################################
+
+pro328_16.name=Arduino Pro or Pro Mini (3.3V, 16 MHz) w/ ATmega328
+
+pro328_16.upload.protocol=arduino
+pro328_16.upload.maximum_size=30720
+pro328_16.upload.speed=57600
+
+pro328_16.bootloader.low_fuses=0xFF
+pro328_16.bootloader.high_fuses=0xDA
+pro328_16.bootloader.extended_fuses=0x05
+pro328_16.bootloader.path=atmega
+pro328_16.bootloader.file=ATmegaBOOT_168_atmega328.hex
+pro328_16.bootloader.unlock_bits=0x3F
+pro328_16.bootloader.lock_bits=0x0F
+
+pro328_16.build.mcu=atmega328p
+pro328_16.build.f_cpu=16000000L
+pro328_16.build.core=arduino
+pro328_16.build.variant=standard
+
+##############################################################
+
+EOF'
+
+sudo sh -c 'cat /usr/share/arduino/hardware/arduino/boards.txt.orig >> /usr/share/arduino/hardware/arduino/boards.txt'
+
+
+
+
+sudo cp /usr/share/arduino/hardware/arduino/bootloaders/optiboot/Makefile /usr/share/arduino/hardware/arduino/bootloaders/optiboot/Makefile.orig
+
+LINE=$(expr $(grep -n "atmega328_isp:" /usr/share/arduino/hardware/arduino/bootloaders/optiboot/Makefile | cut -d : -f 1 | tail -1) + 2)
+
+sudo sh -c 'sed -i "'$LINE' i \\
+ \\
+# Standard atmega328, only at 38,400 baud for closer clock accuracy AND using 8Mhz internal RC oscillator \\
+# \\
+atmega328_384_8: TARGET = atmega328 \\
+atmega328_384_8: MCU_TARGET = atmega328p \\
+atmega328_384_8: CFLAGS += '"'"'-DLED_START_FLASHES=3'"'"' '"'"'-DBAUD_RATE=38400'"'"' \\
+atmega328_384_8: AVR_FREQ = 8000000L \\
+atmega328_384_8: LDSECTIONS  = -Wl,--section-start=.text=0x7e00 -Wl,--section-start=.version=0x7ffe \\
+atmega328_384_8: \$(PROGRAM)_atmega328_384_8.hex \\
+atmega328_384_8: \$(PROGRAM)_atmega328_384_8.lst \\
+ \\
+atmega328_384_8_isp: atmega328 \\
+atmega328_384_8_isp: TARGET = atmega328 \\
+atmega328_384_8_isp: MCU_TARGET = atmega328p \\
+# 512 byte boot, SPIEN \\
+atmega328_384_8_isp: HFUSE = DE \\
+# Int. RC Osc. 8MHz, slowly rising power-65ms \\
+atmega328_384_8_isp: LFUSE = E2 \\
+# 2.7V brownout \\
+atmega328_384_8_isp: EFUSE = 05 \\
+atmega328_384_8_isp: isp \\
+ \\
+" /usr/share/arduino/hardware/arduino/bootloaders/optiboot/Makefile'
+
+
+cd /usr/share/arduino/hardware/arduino/bootloaders/optiboot
+sudo make atmega328_384_8
+cd -
+
+mkdir -p ~/sketchbook/libraries
+cd ~/sketchbook/libraries
+
+wget https://github.com/jcw/jeelib/archive/master.zip
+unzip -q master.zip
+mv jeelib-master jeelib
+rm master.zip
+
+cd -
+
+
+
+# update buildnotes
+#echo >>$NOTES
+#echo Arduino IDE installed and configured to use GPIO serial port >>$NOTES
+#echo RFM2Pi and 3.3v 16MHz Pro Mini board types added >>$NOTES
+#echo jeelib library installed >>$NOTES
+#echo >>$NOTES
+
