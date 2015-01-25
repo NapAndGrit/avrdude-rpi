@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $@ == */dev/ttyS0* ]]
+if [[ $@ == */dev/ttyS0* ||  $@ == */dev/ttyAMA0* ]];
 then
 	sudo strace -o "|autoreset" -eioctl /usr/bin/avrdude-original $@;
 else
