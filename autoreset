@@ -11,10 +11,9 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 dtr = re.compile('.+TIOCM_DTR.+')
 start = time.time()
-pin = 4
+pin = 7 # P1-7 (BCM pin 4 or WiringPi pin 7)
 
 def reset():
-  GPIO.setmode(GPIO.BCM)
   GPIO.setup(pin, GPIO.OUT)
   GPIO.output(pin, GPIO.HIGH)
   time.sleep(0.12)
