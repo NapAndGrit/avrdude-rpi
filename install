@@ -27,6 +27,11 @@ ARDUINO="arduino-core"
 if [[ $IDE == "True" ]]; then ARDUINO="arduino"; fi
 sudo apt-get install -y $ARDUINO python-dev
 
+# To use bitbashed SPI for ISP install modified avrdude B4 avrdude-rpi
+
+
+
+
 sudo mv /usr/bin/avrdude /usr/bin/avrdude-original
 sudo ln ~/avrdude-rpi/autoreset /usr/bin
 sudo ln ~/avrdude-rpi/avrdude-autoreset /usr/bin
@@ -137,10 +142,34 @@ unzip -q master.zip
 mv jeelib-master jeelib
 rm master.zip
 
-cd -
+wget wget https://github.com/openenergymonitor/EmonLib/archive/master.zip
+unzip -q master.zip
+mv EmonLib-master EmonLib
+rm master.zip
 
+cd - >/dev/null
 
-
+# Comment out the serial console line of inittab
+if [[ $(grep -v ^# "/etc/inittab" | grep ttyAMA0) ]]; then
+    sudo sh -c 'cat /etc/inittab > /etc/inittab.orig'
+    sudo sed -i "s,$(grep -v ^# '/etc/inittab' | grep ttyAMA0),# &," /etc/inittab;
+    REBOOT=True
+fi
+# Edit the cmdline.txt
+CMDLINE=`cat /boot/cmdline.txt`
+SUBSTR='console=tty1'
+if [[ $CMDLINE == *$SUBSTR* ]] ; then
+    sudo sh -c "echo $CMDLINE > /boot/cmdline.txt.orig"
+    sudo bash -c "echo ${CMDLINE//$SUBSTR/} > /boot/cmdline.txt"
+    REBOOT=True
+fi
+if [[ $REBOOT == "True" ]] ; then
+    echo "A restart is required for changes to take effect"
+    if [[ $REBOOT == "True" ]] ; then
+        echo "Restarting now..."
+        sudo shutdown -r now
+    fi
+fi
 # update buildnotes
 #echo >>$NOTES
 #echo Arduino IDE installed and configured to use GPIO serial port >>$NOTES
