@@ -134,20 +134,29 @@ cd /usr/share/arduino/hardware/arduino/bootloaders/optiboot
 sudo make atmega328_384_8
 cd -
 
-mkdir -p ~/sketchbook/libraries
-cd ~/sketchbook/libraries
+LIBS=~/sketchbook/libraries
+mkdir -p $LIBS
+git clone https://github.com/jcw/jeelib.git $LIBS
+git clone https://github.com/openenergymonitor/EmonLib.git $LIBS
+git clone https://github.com/pb66/OneWire.git $LIBS
 
-wget https://github.com/jcw/jeelib/archive/master.zip
-unzip -q master.zip
-mv jeelib-master jeelib
-rm master.zip
-
-wget wget https://github.com/openenergymonitor/EmonLib/archive/master.zip
-unzip -q master.zip
-mv EmonLib-master EmonLib
-rm master.zip
-
-cd - >/dev/null
+#cd ~/sketchbook/libraries
+#
+#wget https://github.com/jcw/jeelib/archive/master.zip
+#unzip -q master.zip
+#mv jeelib-master jeelib
+#rm master.zip
+#
+#wget https://github.com/openenergymonitor/EmonLib/archive/master.zip
+#unzip -q master.zip
+#mv EmonLib-master EmonLib
+#rm master.zip
+#
+#wget http://www.pjrc.com/teensy/arduino_libraries/OneWire.zip
+#unzip -q OneWire.zip
+#rm OneWire.zip
+#
+#cd - >/dev/null
 
 # Comment out the serial console line of inittab
 if [[ $(grep -v ^# "/etc/inittab" | grep ttyAMA0) ]]; then
