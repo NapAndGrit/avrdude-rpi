@@ -136,9 +136,9 @@ cd -
 
 LIBS=~/sketchbook/libraries
 mkdir -p $LIBS
-git clone https://github.com/jcw/jeelib.git $LIBS
-git clone https://github.com/openenergymonitor/EmonLib.git $LIBS
-git clone https://github.com/pb66/OneWire.git $LIBS
+git clone https://github.com/jcw/jeelib.git $LIBS/jeelib
+git clone https://github.com/openenergymonitor/EmonLib.git $LIBS/EmonLib
+git clone https://github.com/pb66/OneWire.git $LIBS/OneWire
 
 #cd ~/sketchbook/libraries
 #
