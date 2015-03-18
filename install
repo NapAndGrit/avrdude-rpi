@@ -18,7 +18,7 @@ do
     esac
 done
 
-if [[ $UPDATE != False ]] ; then
+if [[ $UPDATE != "False" ]] ; then
     sudo apt-get update
     sudo apt-get upgrade -y
 fi
@@ -174,7 +174,7 @@ if [[ $CMDLINE == *$SUBSTR* ]] ; then
 fi
 if [[ $REBOOT == "True" ]] ; then
     echo "A restart is required for changes to take effect"
-    if [[ $REBOOT == "True" ]] ; then
+    if [[ $UPDATE != "False" ]] ; then
         echo "Restarting now..."
         sudo shutdown -r now
     fi
