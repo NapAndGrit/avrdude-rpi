@@ -23,7 +23,7 @@ sudo ln -s /dev/ttyAMA0 /dev/ttyS0
 sudo sh -c 'sed -i "/^exit 0/i\sudo ln -s /dev/ttyAMA0 /dev/ttyS0\n" /etc/rc.local'
 
 
-
+sudo mv /usr/share/arduino/hardware/arduino/boards.txt /tmp/boards.txt
 sudo sh -c 'cat <<EOF > /usr/share/arduino/hardware/arduino/boards.txt
 
 # Custom boards added by avrtoolbox include
@@ -75,7 +75,7 @@ pro328_16.build.variant=standard
 
 EOF'
 
-sudo sh -c 'cat /usr/share/arduino/hardware/arduino/boards.txt.orig >> /usr/share/arduino/hardware/arduino/boards.txt'
+sudo sh -c 'cat /tmp/boards.txt >> /usr/share/arduino/hardware/arduino/boards.txt'
 
 
 
